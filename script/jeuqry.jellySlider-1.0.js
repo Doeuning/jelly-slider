@@ -15,6 +15,7 @@
                     loop: true,
                     speed: 500,
                     fade: false, 
+                    drag: false,
                     vertical: false,
                 },
                 mouseEvent: null,
@@ -42,7 +43,7 @@
                     this.setArrows(_);
                     this.loop(_);
                     this.fade(_);
-                    this.mouseEvent(_);
+                    this.dragAble(_);
                 },
                 setIndex: function(_){
                     _.slides.each(function(i){
@@ -184,27 +185,29 @@
                         })
                     }
                 },
-                mouseEvent: function(_){
-                    var direction = "",
-                        oldx = 0;
-                        _.slides.off('mousedown.mouseDownEvent').on('mousedown.mouseDownEvent', function(e){
-                            $(e.target).on('mousemove.detectDirection', function(e){
-                                if (e.pageX < oldx) {
-                                    direction = "left"
-                                } else if (e.pageX > oldx) {
-                                    direction = "right"
-                                }
-                                oldx = e.pageX;
+                dragAble: function(_){
+                    if (_.setOptions.drag) {
+                        var direction = "",
+                            oldx = 0;
+                            _.slides.off('mousedown.mouseDownEvent').on('mousedown.mouseDownEvent', function(e){
+                                $(e.target).on('mousemove.detectDirection', function(e){
+                                    if (e.pageX < oldx) {
+                                        direction = "left"
+                                    } else if (e.pageX > oldx) {
+                                        direction = "right"
+                                    }
+                                    oldx = e.pageX;
+                                })
                             })
-                        })
-                        .on('mouseup.mouseUpEvent', function(e){
-                            if (direction === 'left') {
-                                jelly.moveNext(_);
-                            } else {
-                                jelly.movePrev(_);
-                            }
-                            $(e.target).off('mousemove.detectDirection');
-                        });
+                            .on('mouseup.mouseUpEvent', function(e){
+                                if (direction === 'left') {
+                                    jelly.moveNext(_);
+                                } else {
+                                    jelly.movePrev(_);
+                                }
+                                $(e.target).off('mousemove.detectDirection');
+                            });
+                    }
                 }
             }
             jelly.init();
