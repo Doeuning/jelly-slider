@@ -17,6 +17,7 @@
                     fade: false, 
                     vertical: false,
                 },
+                mouseEvent: null,
                 btnPrev: el.find('.jelly-prev').length ? el.find('.jelly-prev') : null,
                 btnNext: el.find('.jelly-next').length ? el.find('.jelly-next') : null,
                 setOptions: null,
@@ -41,6 +42,7 @@
                     this.setArrows(_);
                     this.loop(_);
                     this.fade(_);
+                    this.mouseEvent(_);
                 },
                 setIndex: function(_){
                     _.slides.each(function(i){
@@ -181,6 +183,28 @@
                             transition: _.setOptions.speed + 'ms',
                         })
                     }
+                },
+                mouseEvent: function(_){
+                    var direction = "",
+                        oldx = 0;
+                        _.this.off('mousedown.mouseDownEvent').on('mousedown.mouseDownEvent', function(e){
+                            $(e.target).on('mousemove.detectDirection', function(e){
+                                if (e.pageX < oldx) {
+                                    direction = "left"
+                                } else if (e.pageX > oldx) {
+                                    direction = "right"
+                                }
+                                oldx = e.pageX;
+                            })
+                        })
+                        .on('mouseup.mouseUpEvent', function(e){
+                            if (direction === 'left') {
+                                jelly.moveNext(_);
+                            } else {
+                                jelly.movePrev(_);
+                            }
+                            $(e.target).off('mousemove.detectDirection');
+                        });
                 }
             }
             jelly.init();
