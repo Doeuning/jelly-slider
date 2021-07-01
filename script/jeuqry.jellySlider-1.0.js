@@ -6,7 +6,7 @@
                 this: el,
                 list: el.find('.jelly-list'),
                 slides: el.find('.jelly-slide'),
-                slidesLength: el.find('.jelly-slide').length,
+                slidesLength: el.find('.jelly-slide').not('.jelly-cloned').length,
                 currentSlide: 0,
                 currentPosition: 0,
                 options: {
@@ -36,9 +36,21 @@
             // 함수
             var jelly = {
                 init: function(){
+                    this.setIndex(_);
                     this.setWidth(_);
                     this.setArrows(_);
-                    this.loop(_);
+                    this.active(_);
+                    _.currentSlide = 0;
+                    // _.slides.each(function(){
+                    //     if ($(this).data('jelly-index') === _.currentSlide) {
+                    //         _.currentPosition = $(this).position().left;
+                    //     }
+                    // })
+                },
+                setIndex: function(_){
+                    _.slides.each(function(i){
+                        $(this).attr('data-jelly-index', i);
+                    })
                 },
                 setWidth: function(_){
                     _.slides.css({
@@ -71,46 +83,89 @@
                     }
                 },
                 moveNext: function(){
-                    jelly.loop(_);
-
-                    if (_.currentSlide < _.slidesLength - 1) {
-                        _.currentSlide += 1;
-                        _.currentPosition = _.currentPosition + _.this.outerWidth();
-                        _.list.css({
-                            transform: 'translateX(-' + _.currentPosition + 'px)'
-                        });
-                    }
-                    
-                    _.slides.each(function(i){
-                        if (i === _.currentSlide) {
-                            $(this).addClass('jelly-active').siblings().removeClass('jelly-active');
+                    if (_.setOptions.loop) {
+                        if (_.currentSlide == _.slidesLength) {
+                            setTimeout(() => {
+                                _.currentSlide = 0;
+                                _.list.css({
+                                    transition: 'none',
+                                    transform: 'translateX(-' + _.currentPosition + 'px)'
+                                });
+                            }, _.setOptions.speed + 10);
+                        } else if (_.currentSlide < _.slidesLength) {
+                            _.currentSlide += 1;
                         }
-                    })
+                    } else {
+                        if (_.currentSlide < _.slidesLength - 1) {
+                            _.currentSlide += 1;
+                        }
+                    }
+                    jelly.active(_);
                 },
                 movePrev: function(){
-                    if (_.currentSlide > 0) {
-                        _.currentSlide += -1;
-                        _.currentPosition = _.currentPosition - _.this.outerWidth();
-                        _.list.css({
-                            transform: 'translateX(-' + _.currentPosition + 'px)'
-                        });
-                    }
-        
-                    _.slides.each(function(i){
-                        if (i === _.currentSlide) {
-                            $(this).addClass('jelly-active').siblings().removeClass('jelly-active');
+                    if (_.setOptions.loop) {
+                        if (_.currentSlide == -1) {
+                            setTimeout(() => {
+                                _.currentSlide = _.slidesLength -1;
+                                _.list.css({
+                                    transition: 'none',
+                                    transform: 'translateX(-' + _.currentPosition + 'px)'
+                                });
+                            }, _.setOptions.speed + 10);
+                        } else if (_.currentSlide >= 0) {
+                            _.currentSlide += -1;
                         }
-                    })
+                    } else {
+                        if (_.currentSlide > 0) {
+                            _.currentSlide += -1;
+                        }
+                    }
+                    jelly.active(_);
                 },
                 loop: function(_){
-                    if (_.setOptions.loop) {
-                        console.log('loop');
-                        // _.slides.each(function(i, el){
-                        //     if (_.currentSlide == _.slidesLength - 1) {
-                        //         $(this).clone().appendTo('.jelly-list');
-                        //     }
-                        // });
-                    }
+                    
+                },
+                active: function(_){
+                    _.slides.each(function(i){
+                        if ($(this).data('jelly-index') === _.currentSlide) {
+                            $(this).addClass('jelly-active');
+                            _.currentPosition = $(this).position().left;
+                            
+                            if (_.setOptions.loop) {
+                                var clonedSlide = _.list.find('.jelly-cloned');
+                                clonedSlide.remove();
+                                if ($(_.slides[0]).hasClass('jelly-active')) {
+                                    clonedSlide = $(_.slides[_.slidesLength -1]).clone();
+                                    clonedSlide.prependTo(_.list).addClass('jelly-cloned').attr('data-jelly-index', -1);
+                                    _.currentPosition = _.currentPosition - _.this.outerWidth();
+                                } else if ($(_.slides[_.slidesLength -1]).hasClass('jelly-active')) {
+                                    clonedSlide = $(_.slides[0]).clone();
+                                    clonedSlide.appendTo(_.list).addClass('jelly-cloned').attr('data-jelly-index', _.slidesLength);
+                                } else {
+                                    setTimeout(() => {
+                                        clonedSlide.remove();
+                                    }, _.setOptions.speed + 10);
+                                }
+
+                                if ($(this).prevAll().hasClass('jelly-cloned')) {
+                                    _.currentPosition = $(this).position().left;
+                                    console.log(_.currentPosition);
+                                } else if ($(this).nextAll().hasClass('jelly-cloned')) {
+                                    console.log('다음에 있음');
+                                    _.currentPosition = $(this).position().left;
+                                } else {
+                                    _.currentPosition = $(this).position().left; 
+                                }
+                            }
+                        } else if (_.currentSlide === -1) {
+                            console.log(_.currentSlide);
+                            // $(this)[_.slidesLength].addClass('jelly-active');
+                        }
+                    });
+                    _.list.css({
+                        transition: _.setOptions.speed + 'ms',
+                        transform: 'translateX(-' + _.currentPosition + 'px)'
+                    });
                 }
             }
             jelly.init();
