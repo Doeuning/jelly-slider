@@ -187,7 +187,7 @@
                 mouseEvent: function(_){
                     var direction = "",
                         oldx = 0;
-                        _.this.off('mousedown.mouseDownEvent').on('mousedown.mouseDownEvent', function(e){
+                        _.slides.off('mousedown.mouseDownEvent').on('mousedown.mouseDownEvent', function(e){
                             $(e.target).on('mousemove.detectDirection', function(e){
                                 if (e.pageX < oldx) {
                                     direction = "left"
