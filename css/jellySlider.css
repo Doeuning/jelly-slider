@@ -70,4 +70,22 @@
   color: #000;
   opacity: .5;
 }
+
+.jelly-slider.jelly-fade .jelly-list {
+  width: 100% !important;
+  -webkit-transform: translate(0, 0) !important;
+          transform: translate(0, 0) !important;
+  -webkit-transition-property: all;
+  transition-property: all;
+}
+
+.jelly-slider.jelly-fade .jelly-list .jelly-slide {
+  position: absolute;
+  opacity: 0;
+}
+
+.jelly-slider.jelly-fade .jelly-list .jelly-slide.jelly-active {
+  position: relative;
+  opacity: 1;
+}
 /*# sourceMappingURL=jellySlider.css.map */

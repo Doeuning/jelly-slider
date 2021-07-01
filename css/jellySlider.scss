@@ -64,4 +64,19 @@
             opacity: .5;
         }
     }
+    &.jelly-fade {
+        .jelly-list {
+            width: 100% !important;
+            transform: translate(0, 0) !important;
+            transition-property: all;
+            .jelly-slide {
+                position: absolute;
+                opacity: 0;
+                &.jelly-active {
+                    position: relative;
+                    opacity: 1;
+                }
+            }
+        }
+    }
 }
