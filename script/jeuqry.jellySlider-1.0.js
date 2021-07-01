@@ -12,7 +12,7 @@
                 options: {
                     arrows: true,
                     navigations: true,
-                    loop: true,
+                    loop: false,
                     speed: 500,
                     fade: false, 
                     drag: false,

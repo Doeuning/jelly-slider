@@ -7,12 +7,13 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="./script/jeuqry.jellySlider-1.0.js"></script>
+    <link href="http://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/jellySlider.css">
 </head>
 <body>
     <div id="wrap">
-        <h1 class="tit">slide</h1>
+        <h1 class="tit">Jelly Slider</h1>
         <ul class="list">
             <li>
                 <h2 class="sec-tit">basic</h2>
@@ -28,10 +29,15 @@
                             <div class="jelly-slide"><div class="box">6</div></div>
                         </div>
                     </div>
+                    <div class="code-area">
+                        <pre>
+&lt;script&gt;
+    $('#jelly-slider01').jellySlider();
+&lt;/script&gt;
+                        </pre>
+                    </div>
                     <script>
-                        $('#jelly-slider01').jellySlider({
-                            loop: false
-                        });
+                        $('#jelly-slider01').jellySlider();
                     </script>
                 </div>
             </li>
@@ -45,6 +51,15 @@
                             <div class="jelly-slide"><div class="box">2</div></div>
                             <div class="jelly-slide"><div class="box">3</div></div>
                         </div>
+                    </div>
+                    <div class="code-area">
+                        <pre>
+&lt;script&gt;
+    $('#jelly-slider02').jellySlider({
+        loop: true,
+    });
+&lt;/script&gt;
+                        </pre>
                     </div>
                     <script>
                         $('#jelly-slider02').jellySlider({
@@ -63,6 +78,16 @@
                             <div class="jelly-slide"><div class="box">2</div></div>
                             <div class="jelly-slide"><div class="box">3</div></div>
                         </div>
+                    </div>
+                    <div class="code-area">
+                        <pre>
+&lt;script&gt;
+    $('#jelly-slider03').jellySlider({
+        loop: true,
+        drag: true,
+    });
+&lt;/script&gt;
+                        </pre>
                     </div>
                     <script>
                         $('#jelly-slider03').jellySlider({
