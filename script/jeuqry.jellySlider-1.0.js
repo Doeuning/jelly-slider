@@ -69,10 +69,10 @@
                             _.btnPrev = addPrev.find('.jelly-prev');
                             _.btnNext = addNext.find('.jelly-next');
                         }
-                        _.btnNext.on('click', function(e){
+                        _.btnNext.off('click.nextClick').on('click.nextClick', function(e){
                             jelly.moveNext();
                         });
-                        _.btnPrev.on('click', function(){
+                        _.btnPrev.off('click.prevClick').on('click.prevClick', function(){
                             jelly.movePrev();
                         });
                     }
@@ -88,7 +88,6 @@
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
                             });
                             jelly.checkActive(_, _.currentSlide);
-                            console.log(_.currentSlide, _.slidesLength);
                             if (_.currentSlide > _.slidesLength - 2) {
                                 setTimeout(() => {
                                     _.currentSlide = 1;
@@ -98,7 +97,6 @@
                                         transform: 'translateX(-' + _.currentPosition + 'px)'
                                     });
                                     jelly.checkActive(_, _.currentSlide);
-                                    console.log(_.currentSlide, _.slidesLength);
                                 }, _.setOptions.speed + 10);
                             }
                         }
@@ -125,7 +123,6 @@
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
                             });
                             jelly.checkActive(_, _.currentSlide);
-                            console.log(_.currentSlide, _.slidesLength);
                             if (_.currentSlide <= 0) {
                                 setTimeout(() => {
                                     _.currentSlide = _.slidesLength - 2;
@@ -135,7 +132,6 @@
                                         transform: 'translateX(-' + _.currentPosition + 'px)'
                                     });
                                     jelly.checkActive(_, _.currentSlide);
-                                    console.log(_.currentSlide, _.slidesLength);
                                 }, _.setOptions.speed + 10);
                             }
                         }
@@ -170,14 +166,13 @@
                 },
                 checkActive: function(_, curr){
                     _.slides = _.list.find('.jelly-slide');
-                    console.log('current', curr);
                     _.slides.each(function(i){
                         if (i === curr) {
                             $(this).addClass('jelly-active').siblings().removeClass('jelly-active');
                         } else {
                             $(this).removeClass('jelly-active');
                         }
-                    })
+                    });
                 },
                 fade: function(_){
                     if (_.setOptions.fade) {
