@@ -9,6 +9,7 @@
                 slidesLength: el.find('.jelly-slide').length,
                 currentSlide: 0,
                 currentPosition: 0,
+                movePosition: el.outerWidth(),
                 options: {
                     arrows: true,
                     navigations: true,
@@ -17,6 +18,9 @@
                     fade: false, 
                     drag: false,
                     vertical: false,
+                    view: 1,
+                    move: 1,
+                    margin: 0,
                 },
                 mouseEvent: null,
                 btnPrev: el.find('.jelly-prev').length ? el.find('.jelly-prev') : null,
@@ -44,6 +48,7 @@
                     this.loop(_);
                     this.fade(_);
                     this.dragAble(_);
+                    this.multipleSlider(_);
                 },
                 setIndex: function(_){
                     _.slides.each(function(i){
@@ -81,11 +86,14 @@
                     }
                 },
                 moveNext: function(){
+                    if (_.setOptions.move > 1) {
+                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * _.setOptions.view))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.view) + _.setOptions.margin;
+                    }
                     if (_.setOptions.loop) {
                         _.slidesLength =  _.this.find('.jelly-slide').length;
                         if (_.currentSlide <= _.slidesLength - 2) {
                             _.currentSlide += 1;
-                            _.currentPosition = _.currentPosition + _.this.outerWidth();
+                            _.currentPosition = _.currentPosition + _.movePosition;
                             _.list.css({
                                 transition: _.setOptions.speed + 'ms',
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -94,7 +102,7 @@
                             if (_.currentSlide > _.slidesLength - 2) {
                                 setTimeout(() => {
                                     _.currentSlide = 1;
-                                    _.currentPosition = _.this.outerWidth();
+                                    _.currentPosition = _.movePosition;
                                     _.list.css({
                                         transition: 'none',
                                         transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -106,7 +114,7 @@
                     } else {
                         if (_.currentSlide < _.slidesLength - 1) {
                             _.currentSlide += 1;
-                            _.currentPosition = _.currentPosition + _.this.outerWidth();
+                            _.currentPosition = _.currentPosition + _.movePosition;
                             _.list.css({
                                 transition: _.setOptions.speed + 'ms',
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -116,11 +124,14 @@
                     }
                 },
                 movePrev: function(){
+                    if (_.setOptions.move > 1) {
+                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * _.setOptions.view))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.view) + _.setOptions.margin;
+                    }
                     if (_.setOptions.loop) {
                         _.slidesLength =  _.this.find('.jelly-slide').length;
                         if (_.currentSlide >= 0) {
                             _.currentSlide += -1;
-                            _.currentPosition = _.currentPosition - _.this.outerWidth();
+                            _.currentPosition = _.currentPosition - _.movePosition;
                             _.list.css({
                                 transition: _.setOptions.speed + 'ms',
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -129,7 +140,7 @@
                             if (_.currentSlide <= 0) {
                                 setTimeout(() => {
                                     _.currentSlide = _.slidesLength - 2;
-                                    _.currentPosition = _.currentSlide * _.this.outerWidth();
+                                    _.currentPosition = _.currentSlide * _.movePosition;
                                     _.list.css({
                                         transition: 'none',
                                         transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -141,7 +152,7 @@
                     } else {
                         if (_.currentSlide > 0) {
                             _.currentSlide += -1;
-                            _.currentPosition = _.currentPosition - _.this.outerWidth();
+                            _.currentPosition = _.currentPosition - _.movePosition;
                             _.list.css({
                                 transition: _.setOptions.speed + 'ms',
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -151,6 +162,13 @@
                     }
                 },
                 loop: function(_){
+                    if (_.setOptions.move > 1) {
+                        if (_.setOptions.margin) {
+                            _.movePosition = (_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1))) / _.setOptions.view + _.setOptions.margin;
+                        } else {
+                            _.movePosition = (_.this.outerWidth() / _.setOptions.view);
+                        }
+                    }
                     if (_.setOptions.loop) {
                         _.currentSlide = 1;
                         _.slides.each(function(i, el){
@@ -160,7 +178,7 @@
                                 $(this).clone().prependTo(_.list).addClass('jelly-cloned').attr('data-jelly-index', -1);
                             }
                         });
-                        _.currentPosition = _.this.outerWidth();
+                        _.currentPosition = _.movePosition;
                         _.list.css({
                             transition: 'none',
                             transform: 'translateX(-' + _.currentPosition + 'px)'
@@ -171,7 +189,7 @@
                     _.slides = _.list.find('.jelly-slide');
                     _.slides.each(function(i){
                         if (i === curr) {
-                            $(this).addClass('jelly-active').siblings().removeClass('jelly-active');
+                            $(this).addClass('jelly-active');
                         } else {
                             $(this).removeClass('jelly-active');
                         }
@@ -207,6 +225,24 @@
                                 }
                                 $(e.target).off('mousemove.detectDirection');
                             });
+                    }
+                },
+                multipleSlider: function(_){
+                    if (_.setOptions.view <= 1) {
+                        _.setOptions.view = 1
+                    } else {
+                        var slideWidth,
+                            slideMargin;
+                        if (_.setOptions.margin) {
+                            slideMargin = _.setOptions.margin + 'px'
+                            slideWidth = (_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1))) / _.setOptions.view;
+                        } else {
+                            slideWidth = _.this.outerWidth() / _.setOptions.view;
+                        }
+                        _.list.find('.jelly-slide').css({
+                            width: slideWidth + 'px',
+                            marginRight: slideMargin,
+                        })
                     }
                 }
             }
