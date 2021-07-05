@@ -59,15 +59,18 @@
                     _.slides.css({
                         width: _.this.outerWidth()
                     });
-                    if (_.setOptions.loop) {
-                        _.list.css({
-                            width: _.this.outerWidth() * (_.slidesLength + 2)
-                        }); 
-                    } else {
-                        _.list.css({
-                            width: _.this.outerWidth() * _.slidesLength
-                        });
+
+                    var slidesLength = _.setOptions.loop ? _.slidesLength + 2 : _.slidesLength;
+                    var listWidth = _.this.outerWidth() * slidesLength;
+
+                    if (_.setOptions.view > 1) {
+                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1)))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.move);
+                        listWidth = _.movePosition * slidesLength;
                     }
+
+                    _.list.css({
+                        width: listWidth
+                    });
                 },
                 setArrows: function(_){
                     if (_.setOptions.arrows) {
@@ -86,8 +89,8 @@
                     }
                 },
                 moveNext: function(){
-                    if (_.setOptions.move > 1) {
-                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * _.setOptions.view))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.view) + _.setOptions.margin;
+                    if (_.setOptions.view > 1) {
+                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1)))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.move);
                     }
                     if (_.setOptions.loop) {
                         _.slidesLength =  _.this.find('.jelly-slide').length;
@@ -124,8 +127,8 @@
                     }
                 },
                 movePrev: function(){
-                    if (_.setOptions.move > 1) {
-                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * _.setOptions.view))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.view) + _.setOptions.margin;
+                    if (_.setOptions.view > 1) {
+                        _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1)))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.move);
                     }
                     if (_.setOptions.loop) {
                         _.slidesLength =  _.this.find('.jelly-slide').length;
