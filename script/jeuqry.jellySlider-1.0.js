@@ -65,7 +65,15 @@
 
                     if (_.setOptions.view > 1) {
                         _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1)))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.move);
-                        slidesLength = _.setOptions.loop ? _.slidesLength + (_.setOptions.view -1) * 2 : _.slidesLength;
+                        if (_.setOptions.loop) {
+                            if (!_.setOptions.move % 2) {
+                                slidesLength = (_.slidesLength + (_.setOptions.view -1) * 2);
+                            } else {
+                                slidesLength = _.slidesLength;
+                            }
+                        } else {
+                            slidesLength = _.slidesLength;
+                        }
                         listWidth = _.movePosition * slidesLength;
                     }
 
@@ -102,17 +110,11 @@
                                 transition: _.setOptions.speed + 'ms',
                                 transform: 'translateX(-' + _.currentPosition + 'px)'
                             });
+
                             jelly.checkActive(_, _.currentSlide);
-                            if (_.currentSlide > _.slidesLength - 2) {
-                                setTimeout(() => {
-                                    _.currentSlide = 1;
-                                    _.currentPosition = _.movePosition;
-                                    _.list.css({
-                                        transition: 'none',
-                                        transform: 'translateX(-' + _.currentPosition + 'px)'
-                                    });
-                                    jelly.checkActive(_, _.currentSlide);
-                                }, _.setOptions.speed + 10);
+
+                            if (_.currentPosition >= _.list.outerWidth() - _.this.outerWidth() - _.setOptions.margin) {
+                                moveFirst();    
                             }
                         }
                     } else {
@@ -126,6 +128,21 @@
                         }
                         jelly.checkActive(_, _.currentSlide);
                     }
+                    function moveFirst(){
+                        setTimeout(() => {
+                            _.currentSlide = 1;
+                            if (_.setOptions.view > 1) {
+                                _.currentPosition = _.movePosition * (_.setOptions.view -2);
+                            } else {
+                                _.currentPosition = _.movePosition;
+                            }
+                            _.list.css({
+                                transition: 'none',
+                                transform: 'translateX(-' + _.currentPosition + 'px)'
+                            });
+                            jelly.checkActive(_, _.currentSlide);
+                        }, _.setOptions.speed + 10);
+                    }
                 },
                 movePrev: function(){
                     if (_.setOptions.view > 1) {
@@ -133,25 +150,17 @@
                     }
                     if (_.setOptions.loop) {
                         _.slidesLength =  _.this.find('.jelly-slide').length;
-                        if (_.currentSlide >= 0) {
-                            _.currentSlide += -1;
-                            _.currentPosition = _.currentPosition - _.movePosition;
-                            _.list.css({
-                                transition: _.setOptions.speed + 'ms',
-                                transform: 'translateX(-' + _.currentPosition + 'px)'
-                            });
-                            jelly.checkActive(_, _.currentSlide);
-                            if (_.currentSlide <= 0) {
-                                setTimeout(() => {
-                                    _.currentSlide = _.slidesLength - 2;
-                                    _.currentPosition = _.currentSlide * _.movePosition;
-                                    _.list.css({
-                                        transition: 'none',
-                                        transform: 'translateX(-' + _.currentPosition + 'px)'
-                                    });
-                                    jelly.checkActive(_, _.currentSlide);
-                                }, _.setOptions.speed + 10);
-                            }
+                        _.currentSlide += -1;
+                        _.currentPosition = _.currentPosition - _.movePosition;
+                        _.list.css({
+                            transition: _.setOptions.speed + 'ms',
+                            transform: 'translateX(-' + _.currentPosition + 'px)'
+                        });
+
+                        jelly.checkActive(_, _.currentSlide);
+
+                        if (_.currentPosition <= 0) {
+                            moveLast();
                         }
                     } else {
                         if (_.currentSlide > 0) {
@@ -163,6 +172,26 @@
                             });
                         }
                         jelly.checkActive(_, _.currentSlide);
+                    }
+                    function moveLast(){
+                        setTimeout(() => {
+                            _.currentSlide = _.slidesLength - 2;
+                            if (_.setOptions.view > 1) {
+                                if (!_.setOptions.move % 0) {
+                                    _.currentPosition = _.movePosition * (_.slidesLength + 2 - _.setOptions.view * 2);
+                                } else {
+                                    _.currentPosition = _.movePosition * (_.slidesLength / _.setOptions.move);
+                                    // 여기수정
+                                }
+                            } else {
+                                _.currentPosition = _.movePosition;
+                            }
+                            _.list.css({
+                                transition: 'none',
+                                transform: 'translateX(-' + _.currentPosition + 'px)'
+                            });
+                            jelly.checkActive(_, _.currentSlide);
+                        }, _.setOptions.speed + 10);
                     }
                 },
                 loop: function(_){
@@ -182,7 +211,11 @@
                             clonedAfter.clone().appendTo(_.list).addClass('jelly-cloned');
                             clonedBefore.clone().prependTo(_.list).addClass('jelly-cloned');
                         } else {
-                            cloneNumber = _.setOptions.view -1;
+                            if (!_.setOptions.move % 2) {
+                                cloneNumber = _.setOptions.view -1;
+                            } else {
+                                cloneNumber = _.setOptions.view;
+                            }
                             clonedAfter = _.slides.slice(0, cloneNumber);
                             clonedBefore = _.slides.slice(-cloneNumber);
                             clonedAfter.clone().appendTo(_.list).addClass('jelly-cloned');
@@ -190,7 +223,11 @@
                         }
                         _.currentPosition = _.movePosition;
                         if (_.setOptions.view > 1) {
-                            _.currentPosition = _.movePosition * (_.setOptions.view -1);
+                            if (!_.setOptions.move % 2) {
+                                _.currentPosition = _.movePosition * (_.setOptions.view -1);
+                            } else {
+                                _.currentPosition = _.movePosition * _.setOptions.view;
+                            }
                         }
                         _.list.css({
                             transition: 'none',
