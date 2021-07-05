@@ -65,11 +65,12 @@
 
                     if (_.setOptions.view > 1) {
                         _.movePosition = (((_.this.outerWidth() - (_.setOptions.margin * (_.setOptions.view -1)))) / _.setOptions.view) * _.setOptions.move + (_.setOptions.margin * _.setOptions.move);
+                        slidesLength = _.setOptions.loop ? _.slidesLength + (_.setOptions.view -1) * 2 : _.slidesLength;
                         listWidth = _.movePosition * slidesLength;
                     }
 
                     _.list.css({
-                        width: listWidth
+                        width: listWidth,
                     });
                 },
                 setArrows: function(_){
@@ -174,14 +175,23 @@
                     }
                     if (_.setOptions.loop) {
                         _.currentSlide = 1;
-                        _.slides.each(function(i, el){
-                            if (i === 0) {
-                                $(this).clone().appendTo(_.list).addClass('jelly-cloned').attr('data-jelly-index', _.slidesLength);
-                            } else if (i === _.slidesLength -1) {
-                                $(this).clone().prependTo(_.list).addClass('jelly-cloned').attr('data-jelly-index', -1);
-                            }
-                        });
+                        var cloneNumber = 1;
+                        var clonedAfter = _.slides.slice(0, cloneNumber);
+                        var clonedBefore = _.slides.slice(-cloneNumber);
+                        if (_.setOptions.view === 1) {
+                            clonedAfter.clone().appendTo(_.list).addClass('jelly-cloned');
+                            clonedBefore.clone().prependTo(_.list).addClass('jelly-cloned');
+                        } else {
+                            cloneNumber = _.setOptions.view -1;
+                            clonedAfter = _.slides.slice(0, cloneNumber);
+                            clonedBefore = _.slides.slice(-cloneNumber);
+                            clonedAfter.clone().appendTo(_.list).addClass('jelly-cloned');
+                            clonedBefore.clone().prependTo(_.list).addClass('jelly-cloned');
+                        }
                         _.currentPosition = _.movePosition;
+                        if (_.setOptions.view > 1) {
+                            _.currentPosition = _.movePosition * (_.setOptions.view -1);
+                        }
                         _.list.css({
                             transition: 'none',
                             transform: 'translateX(-' + _.currentPosition + 'px)'
